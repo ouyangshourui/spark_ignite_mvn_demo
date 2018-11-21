@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+       Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+         Ignite configuration with all defaults, enabled p2p deployment and special data regions.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean class="org.apache.ignite.configuration.IgniteConfiguration">
+        <!-- Set to true to enable distributed class loading for examples, default is false. -->
+        <property name="peerClassLoadingEnabled" value="true"/>
+        <!-- Consistent globally unique node identifier which survives node restarts. -->
+        <!-- 设置节点固定的一致性id,使得节点使用专用目录和数据分区 -->
+        <property name="consistentId" value="event_ignite_product_115"/>
+        <property name="dataStorageConfiguration">
+            <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
+                <!--
+                                         Default memory region that grows endlessly. A cache is bound to this memory region
+                    unless it sets another one in its CacheConfiguration.
+                -->
+                <property name="pageSize" value="#{4 * 1024}"/>
+                <property name="writeThrottlingEnabled" value="true"/>
+                <property name="defaultDataRegionConfiguration">
+                    <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
+                        <property name="name" value="Default_Region"/>
+                        <!-- 10G memory region with enable eviction -->
+                        <property name="initialSize" value="#{20L * 1024 * 1024 * 1024}"/>
+                        <property name="maxSize" value="#{40L * 1024 * 1024 * 1024}"/>
+                        <!-- 默认内存区开启持久化. -->
+                        <property name="checkpointPageBufferSize" value="#{1024L * 1024 * 1024}"/>
+                        <!-- Changing WAL Mode. -->
+                    </bean>
+                </property>
+                <!-- 设置持久化预写日志模式. -->
+                <property name="walMode">
+                    <util:constant static-field="org.apache.ignite.configuration.WALMode.DEFAULT"/>
+                </property>
+
+                <!-- 持久化文件存储路径. -->
+                <!-- <property name="storagePath" value="D:\\Test\\db" /> -->
+                <property name="storagePath" value="/data3/ignite/db" />
+
+                <!-- 预写日志存储路径. -->
+                <!-- <property name="walPath" value="D:\\Test\\db\\wal" /> -->
+                <property name="walPath" value="/data2/ignite/db/wal" />
+
+                <!-- 预写日志解压路径. -->
+                <!-- <property name="walArchivePath" value="D:\\Test\\db\\wal\\archive" /> -->
+                <property name="walArchivePath" value="/data1/ignite/db/wal/archive" />
+
+            </bean>
+
+        </property>
+
+        <property name="cacheConfiguration">
+            <list>
+                <!-- Partitioned cache example configuration (Atomic mode). -->
+                <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                    <property name="name" value="default"/>
+                    <property name="sqlOnheapCacheEnabled" value="true"/>
+                </bean>
+            </list>
+        </property>
+
+
+        <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
+        <property name="discoverySpi">
+            <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+                <property name="ipFinder">
+                    <!--
+                                                 Ignite provides several options for automatic discovery that can be used
+                        instead os static IP based discovery. For information on all options refer
+                        to our documentation: http://apacheignite.readme.io/docs/cluster-config
+                    -->
+                    <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
+                    <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
+                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
+                        <property name="addresses">
+                            <list>
+                                <!-- In distributed environment, replace with actual host IP address. -->
+                                <value>172.172.240.122:47500..47509</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>
