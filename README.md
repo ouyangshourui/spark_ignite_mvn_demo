@@ -3,7 +3,7 @@ spark2.3.0 read  data  from ignite1.6.0 and write data to ignite1.6.0
 # ignite create table 
 sqlline.sh --verbose=true -u jdbc:ignite:thin://bigdata-ignite-04
 
---sql 
+```sql 
 CREATE TABLE event_10001_user(                                                                                             
     _ftenancy_id bigint,                                                                                                                      
     _fid varchar,                                                                                                                             
@@ -34,4 +34,4 @@ CREATE TABLE event_10001_user(
     PRIMARY KEY (_ftenancy_id, _fid)                                                                                                                        
  )WITH "template=partitioned, backups=3, CACHE_NAME=event_10001_user";
 
----
+```
