@@ -89,11 +89,11 @@
                         <property name="addresses">
                             <list>
                                 <!-- In distributed environment, replace with actual host IP address. -->
-                                <value>172.172.240.122:47500..47509</value>
-                                <value>172.172.240.121:47500..47509</value>
-                                <value>172.172.240.120:47500..47509</value>
-                                <value>172.172.240.119:47500..47509</value>
-                                <value>172.172.240.118:47500..47509</value>
+                                <value>172.168.240.122:47500..47509</value>
+                                <value>172.168.240.121:47500..47509</value>
+                                <value>172.168.240.120:47500..47509</value>
+                                <value>172.168.240.119:47500..47509</value>
+                                <value>172.168.240.118:47500..47509</value>
                             </list>
                         </property>
                     </bean>
